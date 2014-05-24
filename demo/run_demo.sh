@@ -1,12 +1,16 @@
 #!/bin/sh
 
 DYNBUF_DIR=".."
-EXEC_DEMO="dynbuf_demo"
+DEMO_SRC="demo.c"
+DEMO_BIN="dynbuf_demo"
+
+cd $(dirname $0)
 
 make -C $DYNBUF_DIR
-gcc demo.c -o $EXEC_DEMO -I$DYNBUF_DIR/inc -L$DYNBUF_DIR -ldynbuf
-echo "====================== DEMO.C ======================="
-highlight -O ansi demo.c 2>/dev/null || cat demo.c
+gcc $DEMO_SRC -o $DEMO_BIN -I$DYNBUF_DIR/inc -L$DYNBUF_DIR -ldynbuf
+echo "====================== $DEMO_SRC ======================="
+highlight -O ansi "$DEMO_SRC" 2>/dev/null || cat "$DEMO_SRC"
 echo "====================================================="
-./$EXEC_DEMO
+./$DEMO_BIN
 
+cd - > /dev/null
