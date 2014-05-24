@@ -7,13 +7,13 @@ int			dynbuf_pop(t_dynbuf *buf, int pos, int datasz)
 
 	if (buf == NULL || datasz < 0)
 		return (-1);
-	if (pos > buf->offset)
+	if (pos > (int)buf->offset)
 		return (-1);
 	if (pos < 0)
 		pos += buf->offset + 1;
 	if (pos < 0)
 		return (-1);
-	if ((pos + datasz) < buf->offset)
+	if ((pos + datasz) < (int)buf->offset)
 	{
 		gap = (char*)buf->ptr + pos;
 		dynbuf_priv_memcpy(gap, gap + datasz, datasz);

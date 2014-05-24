@@ -37,31 +37,31 @@ static int	buf_divide(t_dynbuf *buf, int pos, int datasz)
 {
 	char	*gap;
 
-	if (pos > buf->offset)
+	if (pos > (int)buf->offset)
 		return (-1);
 	if (pos < 0)
 		pos += buf->offset + 1;
 	if (pos < 0)
 		return (-1);
-	if (pos < buf->offset)
+	if (pos < (int)buf->offset)
 	{
 		gap = ((char*)buf->ptr) + pos;
-		dynbuf_priv_memmove((gap + datasz), gap, datasz);
+		dynbuf_priv_memmove((gap + datasz), gap, buf->offset);
 	}
-	return (0);
+	return (pos);
 }
 
-static int	buf_expand(t_dynbuf *buf, int datasize)
+static int	buf_expand(t_dynbuf *buf, int datasz)
 {
-	int		idx;
+	int		newsz;
 
-	while ((buf->offset + datasize) > buf->size)
+	while ((buf->offset + datasz) > buf->size)
 	{
-		idx = buf->size + buf->radix;
-		buf->ptr = (char*)static_realloc(buf->ptr, buf->size, idx);
+		newsz = buf->size + buf->radix;
+		buf->ptr = (char*)static_realloc(buf->ptr, buf->size, newsz);
 		if (buf->ptr == NULL)
 			return (-1);
-		buf->size = idx;
+		buf->size = newsz;
 	}
 	return (0);
 }
@@ -78,14 +78,16 @@ int			dynbuf_insert(t_dynbuf *buf, int pos, const void *data, int datasz)
 		return (0);
 	if (buf_expand(buf, datasz) < 0)
 		return (-1);
-	if (buf_divide(buf, pos, datasz) < 0)
+	pos = buf_divide(buf, pos, datasz);
+	if (pos < 0)
 		return (-1);
 	idx = 0;
 	while (idx < datasz)
 	{
-		((char*)(buf->ptr))[buf->offset] = ((char*)data)[idx];
-		buf->offset += 1;
+		((char*)(buf->ptr))[pos] = ((char*)data)[idx];
+		pos += 1;
 		idx += 1;
 	}
+	buf->offset += datasz;
 	return (idx);
 }
