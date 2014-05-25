@@ -23,7 +23,8 @@ typedef struct	s_dynbuf
     size_t      radix;
 }               t_dynbuf;
 
-// Returns a freshly allocated dynbuf that expands according to `radix`, or NULL it it fails.
+// Returns a freshly allocated dynbuf that expands according to `radix`.
+// If allocation fails, NULL is returned.
 t_dynbuf        *dynbuf_new(int radix);
 
 // Returns a full copy of the given dynbuf, or NULL if it fails.
